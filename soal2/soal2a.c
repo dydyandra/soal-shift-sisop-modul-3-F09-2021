@@ -35,13 +35,14 @@ void *mult(void* arg){
 
 int main(){
 
+  printf("Input Matrix 1:\n");
   for(int i = 0; i<VER; i++){
       for(int j = 0; j<HORX; j++){
           scanf("%d", &matrixA[i][j]);
       }
   }
 
-
+  printf("Input Matrix 2:\n");
   for(int i = 0; i<HORX; i++){
       for(int j = 0; j<HOR; j++){
           scanf("%d", &matrixB[i][j]);
@@ -58,6 +59,7 @@ int main(){
   pthread_t tid[VER*HOR];
   key_t key = 1199;
   int *val;
+  
   
   struct args *data = (struct args *)malloc(sizeof(struct args));
   int counter = 0;
@@ -80,7 +82,7 @@ int main(){
 
   }
 
-
+  printf("Matrix Hasil dari Matrix 1 & 2:\n");
   for(int i = 0; i<VER; i++){
     for(int j = 0; j<HOR; j++){
       printf("%d\t", matrixC[i][j]);
