@@ -61,7 +61,7 @@ void *banding(void *arg){
             // }
         }
     }
-        
+    pthread_exit(0);
 }
 
 int main(){

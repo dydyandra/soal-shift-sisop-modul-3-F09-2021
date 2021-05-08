@@ -191,18 +191,18 @@ int main(int argc, char *argv[]) {
     for (int i = 2; i < argc; i++) {
       pthread_create(&tid[i-2], NULL, pindahFile, (void *)argv[i]);
     }
-    for (int i = 0; i < (argc-2); i++) {
+    for (int i = 2; i < (argc-2); i++) {
       // status will hold the value returned from the thread
-      pthread_join(tid[i], &status); 
+      pthread_join(tid[i-2], &status); 
 
       // cast status as integer (previously is a void ptr)
       flag = (int) status;
 
       // if flag holds a value from status --> file is successful at being categorized
-      if(flag) printf("File %d: Berhasil Dikategorikan\n", i+1); 
+      if(flag) printf("File %d: Berhasil Dikategorikan\n", i-1); 
 
       // if flag == 0 --> file is not successful at being categorized
-      else printf("File %d: Sad, gagal:(\n", i+1);
+      else printf("File %d: Sad, gagal:(\n", i-1);
     //   if(status==0) printf("wah bisa\n");
     }
     exit(0);
@@ -261,13 +261,9 @@ int main(int argc, char *argv[]) {
       for(int i = 0; i<iter; i++){
           // printf("%s", keepFile[i])
           pthread_create(&tid[i], NULL, pindahFile, (void*)keepFile[i]);
-
+          pthread_join(tid[i], NULL);
       }
 
-        for(int i = 0; i<iter; i++){
-          pthread_join(tid[i], &status);
-          // flag = (int) status;
-        }
       
     }
       // pthread_t tid[argc-2];
