@@ -11,7 +11,7 @@
 
 int awal[VER][HOR];
 int input[VER][HOR];
-int hasil[VER][HOR];
+long long hasil[VER][HOR];
 
 
 struct args{
@@ -26,7 +26,7 @@ long long fact(long long n) {
 }
 
 // permutation function
-int permutasi(int n,int r) {
+long long permutasi(int n,int r) {
    return fact(n)/fact(n-r);
 }
 
@@ -129,7 +129,7 @@ int main(){
     printf("Matrix hasil dari A & B:\n");
     for(int i = 0; i<VER; i++){
         for(int j = 0; j<HOR; j++){
-            printf("%d\t", hasil[i][j]);
+            printf("%llu\t", hasil[i][j]);
         }
         printf("\n");
     }
