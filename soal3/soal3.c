@@ -31,6 +31,7 @@ void *pindahFile(void *arg){
   char buffer[999];
   char buffer2[999];
   char buffer3[999];
+  char buffer4[999];
   char path[1000];
   char tempDest[1000];
   char cwd[1000];
@@ -54,6 +55,13 @@ void *pindahFile(void *arg){
     // pthread_exit(0);
   }
 
+  strcpy(buffer4, path);
+
+  char *fileExt3;
+  char dot1 = '.';
+  fileExt3 = strchr(buffer4, dot1);
+  // printf("%s", fileExt3);
+
   strcpy(buffer, path);
   char *token=strtok(buffer, "/");
   while(token != NULL){
@@ -64,17 +72,19 @@ void *pindahFile(void *arg){
   strcpy(buffer, path);
   strcpy(buffer2, fileName);
   strcpy(buffer3, fileName);
+  // strcpy(buffer4, fileName);
+
 
   int count = 0;
 
   char *token2=strtok(buffer2, ".");
-//   printf("%s", buffer2);
+  // printf("%s", token2);
   sprintf(fileExt2, "%s", token2);
 
   
   while(token2 != NULL){
       count++;
-    //   printf("%d", count);
+      // printf("%d", count);
     //   printf("%s\n", token2);
       sprintf(fileExt, "%s", token2);
     //   printf("%s", fileExt);
@@ -89,10 +99,9 @@ void *pindahFile(void *arg){
     strcpy(fileExt, "hidden");
   }
 
-
-//   if(count > 1){
-//       strcpy(fileExt, fileExt2);
-//   }
+  if(count >= 3){
+    strcpy(fileExt, fileExt3+1);
+  }
 
   else if (count <=1 ){
     strcpy(fileExt, "unknown");
