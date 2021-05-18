@@ -17,18 +17,16 @@ Dyandra Paramitha W. | 05111940000119
 
 
 ## Penjelasan No. 2
+Crypto (kamu) adalah teman Loba. Suatu pagi, Crypto melihat Loba yang sedang kewalahan mengerjakan tugas dari bosnya. Karena Crypto adalah orang yang sangat menyukai tantangan, dia ingin membantu Loba mengerjakan tugasnya. Detil dari tugas tersebut adalah:
+
+### a. Membuat program perkalian matrix (4x3 dengan 3x6) dan menampilkan hasilnya. 
+### b. Membuat program dengan menggunakan matriks output dari program sebelumnya (soal2a) dengan shared memory. 
+Matriks tersebut akan dilakukan perhitungan dengan matrix baru (input user) sebagai berikut contoh perhitungan untuk matriks yang ada. Perhitungannya adalah setiap cel yang berasal dari matriks A menjadi angka untuk faktorial, lalu cel dari matriks B menjadi batas maksimal faktorialnya (dari paling besar ke paling kecil)
 
 
-### a. 
-### b. 
 
-
-### c. 
-### d. 
-
-
-### e. 
-
+### c. Mengecek 5 proses teratas apa saja yang memakan resource komputernya dengan command “ps aux | sort -nrk 3,3 | head -5” menggunakan IPC Pipes
+ 
 
 ### Output
 
@@ -415,11 +413,31 @@ Untuk nomor **3d** sudah dijelaskan pada penjelasan fungsi `pindahFile` di atas,
 Sudah dijelaskan pada penjelasan *a, b, c*, dimana semua *path* akan dijadikan *thread* masing-masing, dan akan dieksekusikan secara paralel. 
 ### Output
 #### Saat mode -f
+Apabila memasukkan argumen path seperti di gambar akan memberikan output berikut. 
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal3/soal3outputf.png">
 
+Isi folder apabila menjalankan program dengan mode -f. 
+Folder kategori yang terbentuk yaitu sh (untuk path ke-2 yang berekstensi .sh) dan unknown (dikarenakan untuk path ke-1 tidak memiliki ekstensi)
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal3/soal3folderf.png">
 
 #### Saat mode -d
+Apabila memasukkan argumen path seperti di gambar akan memberikan output berikut. 
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal3/soal3outputd.png">
+
+Isi folder apabila menjalankan program dengan mode -d. 
+Yang memiliki ekstensi lebih dari 1, akan dikategorikan ke dalam folder sesuai dengan titik terdepan saja (seperti .tar.gz). 
+Yang merupakan *file* hidden akan masuk ke dalam folder hidden, dan yang tidak memiliki ekstensi masuk ke dalam folder unknown. 
+File yang dikategorikan juga telah didapatkan dari hasil rekursif pada path. 
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal3/soal3folderd.png">
+
+Isi folder hidden: 
+
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal3/folderhidden.png">
+
 #### Saat mode *
-
-
+Isi folder apabila menjalankan program dengan mode \*. 
+Karena mengkategorikan file dalam current working directory, terlihat bahwa file-file seperti soal3.zip, dan soal3.c juga ikut terkategori pada folder sesuai dengan ekstensi. 
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal3/soal3folderbintang.png">
 
 ### Kendala yang dialami
+- Untuk mengeluarkan output "File %d: Berhasil Dikategorikan" dikarenakan membutuhkan index dari argumen. Ternyata untuk melakukan pthread_join bisa me-returnkan suatu nilai dari fungsi asalkan dalam tipe pointer. [Referensi](https://stackoverflow.com/questions/2251452/how-to-return-a-value-from-pthread-threads-in-c)
