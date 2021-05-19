@@ -20,6 +20,71 @@ Dyandra Paramitha W. | 05111940000119
 Crypto (kamu) adalah teman Loba. Suatu pagi, Crypto melihat Loba yang sedang kewalahan mengerjakan tugas dari bosnya. Karena Crypto adalah orang yang sangat menyukai tantangan, dia ingin membantu Loba mengerjakan tugasnya. Detil dari tugas tersebut adalah:
 
 ### a. Membuat program perkalian matrix (4x3 dengan 3x6) dan menampilkan hasilnya. 
+Pertama, mendeklarasikan variabel terlebih dahulu 
+```
+int matrixA[VER][HORX];
+int matrixB[HORX][HOR];
+int matrixC[VER][HOR];
+
+struct args{
+  int i;
+  int j;
+};
+```
+Kemudian menginputkan matriks 4x3 dN 3x6 menggunakan looping 
+```
+printf("Input Matrix 1:\n");
+  for(int i = 0; i<VER; i++){
+      for(int j = 0; j<HORX; j++){
+          scanf("%d", &matrixA[i][j]);
+      }
+  }
+
+  printf("Input Matrix 2:\n");
+  for(int i = 0; i<HORX; i++){
+      for(int j = 0; j<HOR; j++){
+          scanf("%d", &matrixB[i][j]);
+      }
+  }
+```
+Matriks akan disimpan ke dalam struct, kemudian thread digunakan untuk menjalankan fungsi mult() untuk menghitung hasil perkalian dua matriks tersebut 
+```
+void *mult(void* arg){
+  struct args *data = arg;
+
+  int i = data->i;
+  int j = data->j;
+
+  for(int k=0; k<HORX; k++){
+    matrixC[i][j] += matrixA[i][k] * matrixB[k][j];
+  }
+
+  pthread_exit(0);
+
+}
+```
+Hasil dari perkalian dua matriks tersebut diprint 
+```
+void *mult(void* arg){
+  struct args *data = arg;
+
+  int i = data->i;
+  int j = data->j;
+
+  for(int k=0; k<HORX; k++){
+    matrixC[i][j] += matrixA[i][k] * matrixB[k][j];
+  }
+
+  pthread_exit(0);
+
+}
+```
+Mengalokasikan Shared Memory agar hasil dari perkalian matrix dapat digunakan pada soal b
+```
+  int shmid = shmget(key, sizeof(int)*VER*HOR, IPC_CREAT | 0666);
+  val = shmat(shmid, 0, 0);
+```
+
 ### b. Membuat program dengan menggunakan matriks output dari program sebelumnya (soal2a) dengan shared memory. 
 Matriks tersebut akan dilakukan perhitungan dengan matrix baru (input user) sebagai berikut contoh perhitungan untuk matriks yang ada. Perhitungannya adalah setiap cel yang berasal dari matriks A menjadi angka untuk faktorial, lalu cel dari matriks B menjadi batas maksimal faktorialnya (dari paling besar ke paling kecil)
 
