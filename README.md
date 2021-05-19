@@ -85,6 +85,14 @@ Mengalokasikan Shared Memory agar hasil dari perkalian matrix dapat digunakan pa
   val = shmat(shmid, 0, 0);
 ```
 
+### Output
+Menjalankan program dengan perintah berikut
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/gccsoal2.png">
+Kemudian menginputkan matriks 4x3 dan matriks 3x6
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/soal2a.png">
+Lalu akan ditampilkan hasil perkalian dari dua matriks tersebut
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/soal2a_2.png">
+
 ### b. Membuat program dengan menggunakan matriks output dari program sebelumnya (soal2a) dengan shared memory. 
 Matriks tersebut akan dilakukan perhitungan dengan matrix baru (input user) sebagai berikut contoh perhitungan untuk matriks yang ada. Perhitungannya adalah setiap cel yang berasal dari matriks A menjadi angka untuk faktorial, lalu cel dari matriks B menjadi batas maksimal faktorialnya (dari paling besar ke paling kecil)
 
