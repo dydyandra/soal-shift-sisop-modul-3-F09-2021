@@ -175,9 +175,9 @@ Kemudian yang terakhir adalah menutup Shared Memory
 
 ### Output
 Menjalankan program dengan perintah berikut
-<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/gccsoal2b.png">
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/soal2b.png">
 Kemudian menginputkan matriks B sehingga hasil perhitungannya sebagai berikut
-<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/gccsoal2b_2.png">
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/soal2b_2.png">
 
 ### c. Mengecek 5 proses teratas apa saja yang memakan resource komputernya dengan command “ps aux | sort -nrk 3,3 | head -5” menggunakan IPC Pipes
  
