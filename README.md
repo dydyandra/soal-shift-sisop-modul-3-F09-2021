@@ -198,7 +198,7 @@ Kemudian memanggil fungsi yang menjalankan command pertama
         ps();
     }
 ```
-Menjalankan command pertama yaitu `ps aux` 
+Menjalankan command pertama yaitu `ps aux` untuk meng-list semua proses dan penggunaan status dan sumber daya
 ```
 void ps(){
 
@@ -219,28 +219,7 @@ void ps(){
 
 }
 ```
-Menjalankan command kedua yaitu `head -5`
-```
-void head(){
-
-    // input from reading end of pipe 2
-    close(STDIN);
-    dup(fd2[0]);  
-
-    // close pipe
-    close(fd2[0]);
-    close(fd2[1]);
-
-    // execute command head -5
-    command(3);
-
-    // if execute doesn't work
-    perror("could not execute head -5");
-    _exit(1);
-
-}
-```
-Menjalankan command ketiga yaitu `sort -nrk 3,3`
+Menjalankan command kedua yaitu `sort -nrk 3,3` untuk melakukan sort
 ```
 void sortnrk(){
     
@@ -263,6 +242,27 @@ void sortnrk(){
 
     // if execute doesn't work
     perror("could not execute sort -nrk 3,3");
+    _exit(1);
+
+}
+```
+Menjalankan command ketiga yaitu `head -5` untuk menampilkan 5 data teratas yang memakan resource 
+```
+void head(){
+
+    // input from reading end of pipe 2
+    close(STDIN);
+    dup(fd2[0]);  
+
+    // close pipe
+    close(fd2[0]);
+    close(fd2[1]);
+
+    // execute command head -5
+    command(3);
+
+    // if execute doesn't work
+    perror("could not execute head -5");
     _exit(1);
 
 }
