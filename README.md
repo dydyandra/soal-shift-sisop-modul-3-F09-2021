@@ -96,7 +96,88 @@ Lalu akan ditampilkan hasil perkalian dari dua matriks tersebut
 ### b. Membuat program dengan menggunakan matriks output dari program sebelumnya (soal2a) dengan shared memory. 
 Matriks tersebut akan dilakukan perhitungan dengan matrix baru (input user) sebagai berikut contoh perhitungan untuk matriks yang ada. Perhitungannya adalah setiap cel yang berasal dari matriks A menjadi angka untuk faktorial, lalu cel dari matriks B menjadi batas maksimal faktorialnya (dari paling besar ke paling kecil)
 
+Pertama, mendeklarasikan variabel terlebih dahulu 
+```
+int awal[VER][HOR];
+int input[VER][HOR];
+long long hasil[VER][HOR];
 
+struct args{
+  int i;
+  int j;
+};
+```
+Deklarasi untuk hasil perhitungan menggunakan long long karena untuk berjaga-jaga apabila hasil perhitungannya besar
+Kemudian mengalokasikan Shared Memory lalu Meng-assign matriks dari Shared Memory kepada matrix A
+```
+    pthread_t tid[VER][HOR];
+    key_t key = 1199;
+    int *val;
+    int shmid = shmget(key, sizeof(int)*VER*HOR, IPC_CREAT | 0666);
+    val = shmat(shmid, 0, 0);
+
+    printf("Matrix A:\n");
+    for(int i = 0; i<VER; i++){
+        for(int j = 0; j<HOR; j++){
+            printf("%d\t", val[i*HOR + j]);
+            awal[i][j] = val[i*HOR + j];
+        }
+        printf("\n");
+    }
+```
+Menginputkan matriks B
+```
+    printf("Input Matrix B:\n");
+    for(int i = 0; i<VER; i++){
+        for(int j = 0; j<HOR; j++){
+            scanf("%d", &input[i][j]);
+        }
+    }
+```
+Kemudian thread dijalankan untuk memanggil fungsi banding()
+```
+pthread_create(&tid[i][j], NULL, banding, (void*)ind);
+```
+Di dalam fungsi banding() terdapat 3 case, yang pertama yaitu, apabila terdapat 0 maka hasilnya juga akan 0
+```
+            if(awal[i][j] == 0 || input[i][j] == 0){ 
+                // hasil[i][j] = 0;
+                hasil[i][j] = 0;
+            }
+```
+Untuk case yang kedua, apabila matriks A lebih besar atau sama dengan matriks B, maka akan memanggil fungsi permutasi()
+```
+            else if(awal[i][j]>=input[i][j]){
+                hasil[i][j] = permutasi(awal[i][j], input[i][j]);
+            }
+```
+Untuk case yang ketiga, apabila matriks B lebih besar daripada matriks A, maka yang dipanggil adalah fungsi fact()
+```
+            else if (input[i][j] > awal[i][j]){
+                hasil[i][j] = fact(awal[i][j]);
+            }
+```
+Setelah itu, hasil perhitungan akan di print
+```
+    printf("Matrix hasil dari A & B:\n");
+    for(int i = 0; i<VER; i++){
+        for(int j = 0; j<HOR; j++){
+            printf("%llu\t", hasil[i][j]);
+        }
+        printf("\n");
+    }
+```
+Kemudian yang terakhir adalah menutup Shared Memory
+```
+    shmdt(val);
+    shmctl(shmid, IPC_RMID, NULL);
+```
+
+### Output
+Menjalankan program dengan perintah berikut
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/gccsoal2b.png">
+Kemudian menginputkan matriks B sehingga hasil perhitungannya sebagai berikut
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/gccsoal2b_2.png">
 
 ### c. Mengecek 5 proses teratas apa saja yang memakan resource komputernya dengan command “ps aux | sort -nrk 3,3 | head -5” menggunakan IPC Pipes
  
