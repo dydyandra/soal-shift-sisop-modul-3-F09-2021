@@ -180,15 +180,129 @@ Kemudian menginputkan matriks B sehingga hasil perhitungannya sebagai berikut
 <img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/soal2b_2.png">
 
 ### c. Mengecek 5 proses teratas apa saja yang memakan resource komputernya dengan command “ps aux | sort -nrk 3,3 | head -5” menggunakan IPC Pipes
- 
+Pertama memanggil pipe terlebih dahulu
+```
+    if(pipe1 == -1){
+        perror("bad pipe1");
+        exit(1);
+    }
+```
+Kemudian memanggil fungsi yang menjalankan command pertama
+```
+    pid = fork();
+    if(pid == -1){
+        perror("fork1 error");
+        exit(1);
+    }
+    else if(pid == 0){
+        ps();
+    }
+```
+Menjalankan command pertama yaitu `ps aux` 
+```
+void ps(){
+
+    // replace standard output with the writing end of pipe 1
+    close(STDOUT);
+    dup(fd1[1]);
+    
+    // close pipe
+    close(fd1[0]);
+    close(fd1[1]);
+
+    // execute command ps
+    command(1);
+    
+    //if execute doesn't work
+    perror("could not execute ps");
+    _exit(1);
+
+}
+```
+Menjalankan command kedua yaitu `head -5`
+```
+void head(){
+
+    // input from reading end of pipe 2
+    close(STDIN);
+    dup(fd2[0]);  
+
+    // close pipe
+    close(fd2[0]);
+    close(fd2[1]);
+
+    // execute command head -5
+    command(3);
+
+    // if execute doesn't work
+    perror("could not execute head -5");
+    _exit(1);
+
+}
+```
+Menjalankan command ketiga yaitu `sort -nrk 3,3`
+```
+void sortnrk(){
+    
+    //input from reading end of pipe 1
+    close(STDIN);
+    dup(fd1[0]);  
+
+    // output to writing end of pipe 2
+    close(STDOUT);
+    dup(fd2[1]);
+
+    // close pipe
+    close(fd1[0]);
+    close(fd1[1]);
+    close(fd2[0]);
+    close(fd2[1]);
+
+    // execute command sort
+    command(2);
+
+    // if execute doesn't work
+    perror("could not execute sort -nrk 3,3");
+    _exit(1);
+
+}
+```
 
 ### Output
+<img src="https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/blob/master/screenshot/soal2/soal2c.png">
 
 ### Kendala yang dialami
 
 ## Penjelasan No. 3
 Seorang mahasiswa bernama Alex sedang mengalami masa gabut. Di saat masa gabutnya, ia memikirkan untuk merapikan sejumlah file yang ada di laptopnya. Karena jumlah filenya terlalu banyak, Alex meminta saran ke Ayub. Ayub menyarankan untuk membuat sebuah program C agar file-file dapat dikategorikan. Program ini akan memindahkan file sesuai ekstensinya ke dalam folder sesuai ekstensinya yang folder hasilnya terdapat di working directory ketika program kategori tersebut dijalankan.
 Ada beberapa mode yang harus dibuat agar dapat menkategorikan file, yaitu -f, -d dan *. 
+Menjalankan command ketiga yaitu `sort -nrk 3,3`
+```
+void sortnrk(){
+    
+    //input from reading end of pipe 1
+    close(STDIN);
+    dup(fd1[0]);  
+
+    // output to writing end of pipe 2
+    close(STDOUT);
+    dup(fd2[1]);
+
+    // close pipe
+    close(fd1[0]);
+    close(fd1[1]);
+    close(fd2[0]);
+    close(fd2[1]);
+
+    // execute command sort
+    command(2);
+
+    // if execute doesn't work
+    perror("could not execute sort -nrk 3,3");
+    _exit(1);
+
+}
+```
 
 ### Untuk penyelesaian 3a,3b,3c ada 2 fungsi utama yang digunakan, yaitu untuk mengecek tipe file/direktori, dan untuk mengkategorikan file.
 Untuk penyelesaian 3a,3b,3c ada 2 fungsi utama yang digunakan, yaitu untuk mengecek tipe file/direktori, dan untuk mengkategorikan file.
