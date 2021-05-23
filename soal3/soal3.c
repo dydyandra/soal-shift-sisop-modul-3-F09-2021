@@ -99,7 +99,7 @@ void *pindahFile(void *arg){
     strcpy(fileExt, "hidden");
   }
 
-  if(count >= 3){
+  else if(count >= 3){
     strcpy(fileExt, fileExt3+1);
   }
 
