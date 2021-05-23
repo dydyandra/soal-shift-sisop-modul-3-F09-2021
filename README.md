@@ -8,6 +8,7 @@ Ifanu Antoni | 05111940000064
 Dyandra Paramitha W. | 05111940000119
 
 ### Soal
+1. [File Soal 1](https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/tree/master/soal1) | [Penjelasan No. 1]
 2. [File Soal 2](https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/tree/master/soal2) | [Penjelasan No. 2]
 3. [File Soal 3](https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/tree/master/soal3) | [Penjelasan No. 3]
 
@@ -18,6 +19,205 @@ Keverk adalah orang yang cukup ambisius dan terkenal di angkatannya. Sebelum dia
 Di dalam proyek itu, Keverk diminta: 
 ### a. Membuat fitur register dan login. 
 Jika memilih register, client akan diminta input id dan passwordnya untuk dikirimkan ke server. User juga dapat melakukan login. Login berhasil jika id dan password yang dikirim dari aplikasi client sesuai dengan list akun yang ada didalam aplikasi server. Sistem ini juga dapat menerima multi-connections. 
+
+Dikarenakan client dapat melakukan command secara berkelanjutan, maka dapat menerima banyak socket. Maka dari itu, menggunakan while loop saat membuat socket dan thread. 
+```c
+ while((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))){
+        
+
+        pthread_t sniffer_thread;
+		int *new_sock = malloc(sizeof(int));
+		*new_sock = new_socket;
+		
+		if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) new_sock) < 0)
+		{
+			perror("could not create thread");
+			return 1;
+		}
+
+        pthread_join(sniffer_thread, NULL);
+        // puts("Sukses");
+
+    }
+```
+Saat thread akan memanggil fungsi connection_handler, yaitu untuk melakukan login dan register. 
+Untuk melakukan register: 
+```c
+            if(strcmp(cmd, "register") == 0){
+                if(doRegister(sock)>0){
+                    strcpy(regMessage, regStatus);
+                    strcat(regMessage, "\n\n");
+                    strcat(regMessage, init);
+                    send(sock, regMessage, strlen(regMessage), 0);
+                }
+
+                else {
+                    status_read = 0;
+                    break;
+                }
+  ```
+  
+ Fungsi doRegister yang akan digunakan untuk menyimpan username/password baru pada akun.txt yaitu: 
+ ```c
+ int doRegister(int sock){
+    char msg[20] = {0};
+    char usr[50] = {0};
+    char pwd[50] = {0};
+
+    char *insertUser = "Insert Username: ";
+    char *insertPwd = "Insert Password: ";
+    int valread;
+
+    char usrData[4096];
+    for(int i = 0; i<2; i++){
+        if(i == 0) strcpy(msg, insertUser);
+        else if(i==1) strcpy(msg, insertPwd);
+
+        send(sock, msg, strlen(msg), 0);
+        memset(msg, 0, sizeof(msg));
+
+        if(i == 0){
+            valread = read(sock, usr, 50);
+        }
+        else valread = read(sock, pwd, 50);
+
+        if(!valread) return -1;
+    }
+
+
+    sprintf(usrData, "%s:%s\n", usr, pwd);
+
+    char cwd[4096], usrPath[4096];
+    getcwd(cwd, sizeof(cwd));
+
+    strcpy(usrPath, cwd);
+    strcat(usrPath, "/");
+    strcat(usrPath, "akun.txt");
+    
+    FILE *fPtr;
+
+    fPtr = fopen(usrPath, "a");
+
+    fputs(usrData, fPtr);
+    fclose(fPtr);
+
+    return 1;
+}
+```
+  
+Untuk melakukan login: 
+```c
+                else if(strcmp(cmd, "login") == 0){
+                if(doLogin(&auth,sock,Username,Password) > 0){
+                    int login_status = 1;
+                    send(sock, &login_status, sizeof(login_status), 0);
+                    char *loginStatus = "Welcome!";
+                    strcpy(loginMsg, loginStatus);
+                    strcat(loginMsg, "\n\n");
+                    strcat(loginMsg, LoggedIn);
+                }
+                else{
+                    int login_status = 0;
+                    send(sock, &login_status, sizeof(login_status), 0);
+                    char *loginFail = "Username or Password is Incorrect";
+                    strcpy(loginMsg, loginFail);
+                    strcat(loginMsg, "\n\n");
+                    strcat(loginMsg, init);
+                }
+                send(sock, loginMsg, strlen(loginMsg), 0);
+            }
+```
+Bagian ini pada connection_handler akan memanggil fungsi doLogin, yaitu: 
+```c
+int doLogin(int *flag, int sock, char *Username, char *Password){
+    char msg[20] = { 0 };
+    char usr[50] = {0};
+    char pwd[50] = {0};
+    
+    char *insertUser = "Insert Username: ";
+    char *insertPwd = "Insert Password: ";
+    int valread;
+    char usrData[4096];
+    char cwd[4096];
+    for(int i = 0; i<2;i++)
+    {
+        if(i == 0) strcpy(msg, insertUser);
+        else if(i==1) strcpy(msg, insertPwd);
+
+        send(sock, msg , strlen(msg),0);
+        memset(msg,0,sizeof(msg));
+        if(!i) 
+        {
+            valread = read(sock , usr , 50);
+        }
+        else valread = read(sock , pwd , 50);
+
+        if(!valread) return -1;
+    }
+
+    sprintf(usrData,"%s:%s\n",usr,pwd);
+    //printf("%s\n",namePass);
+
+
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        perror("getcwd() error");
+        return -1;
+    }
+
+    char usrPath[4096];
+    strcpy(usrPath, cwd);
+    strcat(usrPath, "/");
+    strcat(usrPath, "akun.txt");
+
+    FILE * fPtr;
+
+    fPtr = fopen(usrPath, "r");
+
+    if(fPtr == NULL)
+    {
+        printf("Unable to create file.\n");
+        return -1;
+    }
+
+    char *data;
+    size_t len = 0;
+    while ((getline(&data, &len, fPtr)) != -1) {
+
+        if(!strcmp(data,usrData))
+        {
+
+            *flag = 1;
+            strcpy(Username,usr);
+            strcpy(Password,pwd);
+        }
+    }
+
+    memset(usrPath,0,sizeof(usrPath));
+    fclose(fPtr);
+
+    return 1;
+}
+```
+Fungsi doLogin mirip dengan doRegister akan tetapi fungsinya untuk mencari data yang sama dengan data yang diinputkan oleh user di client. 
+
+
+Pada sisi Client, untuk memasukkan data dan mengirimkan kepada Server: 
+```c
+void getData(int sock, char *buffer, char *cmd)
+{
+    memset(buffer,0,2048);
+    memset(cmd,0,2048);
+    for(int i = 0; i<2;i++)
+    {
+        read( sock , buffer, 2048);
+        printf("%s\n",buffer );
+        memset(buffer,0,2048);
+        scanf("%s",cmd);
+        send(sock , cmd , strlen(cmd) , 0 );
+        memset(cmd,0,2048);
+    }
+}
+```
 
 ### b. Membuat database files.tsv
 Sistem memiliki sebuah database yang bernama files.tsv. Isi dari files.tsv ini adalah path file saat berada di server, publisher, dan tahun publikasi. Setiap penambahan dan penghapusan file pada folder file yang bernama  FILES pada server akan memengaruhi isi dari files.tsv. Folder FILES otomatis dibuat saat server dijalankan. 
@@ -65,7 +265,7 @@ printf("Input Matrix 1:\n");
   }
 ```
 Matriks akan disimpan ke dalam struct, kemudian thread digunakan untuk menjalankan fungsi mult() untuk menghitung hasil perkalian dua matriks tersebut 
-```
+```c
 void *mult(void* arg){
   struct args *data = arg;
 
@@ -81,7 +281,7 @@ void *mult(void* arg){
 }
 ```
 Hasil dari perkalian dua matriks tersebut diprint 
-```
+```c
 void *mult(void* arg){
   struct args *data = arg;
 
@@ -114,7 +314,7 @@ Lalu akan ditampilkan hasil perkalian dari dua matriks tersebut
 Matriks tersebut akan dilakukan perhitungan dengan matrix baru (input user) sebagai berikut contoh perhitungan untuk matriks yang ada. Perhitungannya adalah setiap cel yang berasal dari matriks A menjadi angka untuk faktorial, lalu cel dari matriks B menjadi batas maksimal faktorialnya (dari paling besar ke paling kecil)
 
 Pertama, mendeklarasikan variabel terlebih dahulu 
-```
+```c
 int awal[VER][HOR];
 int input[VER][HOR];
 long long hasil[VER][HOR];
@@ -126,7 +326,7 @@ struct args{
 ```
 Deklarasi untuk hasil perhitungan menggunakan long long karena untuk berjaga-jaga apabila hasil perhitungannya besar
 Kemudian mengalokasikan Shared Memory lalu Meng-assign matriks dari Shared Memory kepada matrix A
-```
+```c
     pthread_t tid[VER][HOR];
     key_t key = 1199;
     int *val;
@@ -143,7 +343,7 @@ Kemudian mengalokasikan Shared Memory lalu Meng-assign matriks dari Shared Memor
     }
 ```
 Menginputkan matriks B
-```
+```c
     printf("Input Matrix B:\n");
     for(int i = 0; i<VER; i++){
         for(int j = 0; j<HOR; j++){
@@ -152,30 +352,30 @@ Menginputkan matriks B
     }
 ```
 Kemudian thread dijalankan untuk memanggil fungsi banding()
-```
+```c
 pthread_create(&tid[i][j], NULL, banding, (void*)ind);
 ```
 Di dalam fungsi banding() terdapat 3 case, yang pertama yaitu, apabila terdapat 0 maka hasilnya juga akan 0
-```
+```c
             if(awal[i][j] == 0 || input[i][j] == 0){ 
                 // hasil[i][j] = 0;
                 hasil[i][j] = 0;
             }
 ```
 Untuk case yang kedua, apabila matriks A lebih besar atau sama dengan matriks B, maka akan memanggil fungsi permutasi()
-```
+```c
             else if(awal[i][j]>=input[i][j]){
                 hasil[i][j] = permutasi(awal[i][j], input[i][j]);
             }
 ```
 Untuk case yang ketiga, apabila matriks B lebih besar daripada matriks A, maka yang dipanggil adalah fungsi fact()
-```
+```c
             else if (input[i][j] > awal[i][j]){
                 hasil[i][j] = fact(awal[i][j]);
             }
 ```
 Setelah itu, hasil perhitungan akan di print
-```
+```c
     printf("Matrix hasil dari A & B:\n");
     for(int i = 0; i<VER; i++){
         for(int j = 0; j<HOR; j++){
@@ -185,7 +385,7 @@ Setelah itu, hasil perhitungan akan di print
     }
 ```
 Kemudian yang terakhir adalah menutup Shared Memory
-```
+```c
     shmdt(val);
     shmctl(shmid, IPC_RMID, NULL);
 ```
@@ -198,14 +398,14 @@ Kemudian menginputkan matriks B sehingga hasil perhitungannya sebagai berikut
 
 ### c. Mengecek 5 proses teratas apa saja yang memakan resource komputernya dengan command “ps aux | sort -nrk 3,3 | head -5” menggunakan IPC Pipes
 Pertama memanggil pipe terlebih dahulu
-```
+```c
     if(pipe1 == -1){
         perror("bad pipe1");
         exit(1);
     }
-```
+```c
 Kemudian memanggil fungsi yang menjalankan command pertama
-```
+```c
     pid = fork();
     if(pid == -1){
         perror("fork1 error");
@@ -216,7 +416,7 @@ Kemudian memanggil fungsi yang menjalankan command pertama
     }
 ```
 Menjalankan command pertama yaitu `ps aux` untuk meng-list semua proses dan penggunaan status dan sumber daya
-```
+```c
 void ps(){
 
     // replace standard output with the writing end of pipe 1
@@ -237,7 +437,7 @@ void ps(){
 }
 ```
 Menjalankan command kedua yaitu `sort -nrk 3,3` untuk melakukan sort
-```
+```c
 void sortnrk(){
     
     //input from reading end of pipe 1
@@ -264,7 +464,7 @@ void sortnrk(){
 }
 ```
 Menjalankan command ketiga yaitu `head -5` untuk menampilkan 5 data teratas yang memakan resource 
-```
+```c
 void head(){
 
     // input from reading end of pipe 2
@@ -294,7 +494,7 @@ void head(){
 Seorang mahasiswa bernama Alex sedang mengalami masa gabut. Di saat masa gabutnya, ia memikirkan untuk merapikan sejumlah file yang ada di laptopnya. Karena jumlah filenya terlalu banyak, Alex meminta saran ke Ayub. Ayub menyarankan untuk membuat sebuah program C agar file-file dapat dikategorikan. Program ini akan memindahkan file sesuai ekstensinya ke dalam folder sesuai ekstensinya yang folder hasilnya terdapat di working directory ketika program kategori tersebut dijalankan.
 Ada beberapa mode yang harus dibuat agar dapat menkategorikan file, yaitu -f, -d dan *. 
 Menjalankan command ketiga yaitu `sort -nrk 3,3`
-```
+```c
 void sortnrk(){
     
     //input from reading end of pipe 1
