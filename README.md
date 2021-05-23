@@ -8,13 +8,30 @@ Ifanu Antoni | 05111940000064
 Dyandra Paramitha W. | 05111940000119
 
 ### Soal
-1. Belum mengerjakan no.1 
 2. [File Soal 2](https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/tree/master/soal2) | [Penjelasan No. 2]
 3. [File Soal 3](https://github.com/dydyandra/soal-shift-sisop-modul-3-F09-2021/tree/master/soal3) | [Penjelasan No. 3]
 
 
 ## Penjelasan No. 1
+Keverk adalah orang yang cukup ambisius dan terkenal di angkatannya. Sebelum dia menjadi ketua departemen di HMTC, dia pernah mengerjakan suatu proyek dimana keverk tersebut meminta untuk membuat server database buku. Proyek ini diminta agar dapat digunakan oleh pemilik aplikasi dan diharapkan bantuannya dari pengguna aplikasi ini. 
 
+Di dalam proyek itu, Keverk diminta: 
+### a. Membuat fitur register dan login. 
+Jika memilih register, client akan diminta input id dan passwordnya untuk dikirimkan ke server. User juga dapat melakukan login. Login berhasil jika id dan password yang dikirim dari aplikasi client sesuai dengan list akun yang ada didalam aplikasi server. Sistem ini juga dapat menerima multi-connections. 
+
+### b. Membuat database files.tsv
+Sistem memiliki sebuah database yang bernama files.tsv. Isi dari files.tsv ini adalah path file saat berada di server, publisher, dan tahun publikasi. Setiap penambahan dan penghapusan file pada folder file yang bernama  FILES pada server akan memengaruhi isi dari files.tsv. Folder FILES otomatis dibuat saat server dijalankan. 
+
+### c. Membuat fitur menambah file baru
+Client nanti akan melakukan pengiriman file ke aplikasi server dengan menggunakan socket. Ketika file diterima di server, maka row dari files.tsv akan bertambah sesuai dengan data terbaru yang ditambahkan.
+
+### d. Membuat fitur download
+Dan client dapat mendownload file yang telah ada dalam folder FILES di server, sehingga sistem harus dapat mengirim file ke client. Server harus melihat dari files.tsv untuk melakukan pengecekan apakah file tersebut valid. 
+
+### e. Membuat fitur menghapus file pada Server.
+### f. Membuat fitur see dimana client bisa melihat semua files pada files.tsv
+### g. Membuat fitur pencarian
+### h. Membuat log 
 
 ## Penjelasan No. 2
 Crypto (kamu) adalah teman Loba. Suatu pagi, Crypto melihat Loba yang sedang kewalahan mengerjakan tugas dari bosnya. Karena Crypto adalah orang yang sangat menyukai tantangan, dia ingin membantu Loba mengerjakan tugasnya. Detil dari tugas tersebut adalah:
